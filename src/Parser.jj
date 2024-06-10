@@ -1,0 +1,182 @@
+options {
+//    DEBUG_PARSER = true;
+    STATIC = true;
+}
+PARSER_BEGIN(Java2Kotlin)
+
+public class Java2Kotlin {
+    public static void main(String[] args) throws ParseException {
+      Java2Kotlin parser = new Java2Kotlin(System.in);
+      System.out.println(parser.Input());
+    }
+}
+PARSER_END(Java2Kotlin)
+
+
+SKIP :
+{
+    "\n"
+    | "\r"
+    | " "
+}
+
+TOKEN :
+{
+    < INTEGER : (["0"-"9"])+ >
+    | < FLOATING_POINT : <INTEGER> "." <INTEGER> >
+    | < CHAR : "'" ["\u0020" - "\u007E"] "'" >
+    | < STRING : "\"" (["\u0020" - "\u007E"])+ "\"" >
+}
+
+TOKEN :
+{
+    < ENCAP : "public" | "private" | "protected" >
+    | < STATIC : "static" >
+}
+
+TOKEN :
+{
+    < FOR : "for" >
+    | < DO : "do" >
+    | < WHILE : "while" >
+}
+
+TOKEN :
+{
+    < BYTE_T : "byte" | "Byte" >
+    | < SHORT_T : "short" | "Short" >
+    | < INT_T : "int" | "Integer" >
+    | < LONG_T : "long" | "Long" >
+    | < FLOAT_T : "float" | "Float" >
+    | < DOUBLE_T : "double" | "Double" >
+    | < BOOLEAN_T : "boolean" | "Boolean" >
+    | < CHAR_T : "char" | "Character" >
+    | < VOID_T : "void" >
+    | < STRING_T : "String">
+}
+
+TOKEN :
+{
+    < #LETTER : ["a"-"z", "A"-"Z"] >
+    | < #DIGIT : ["0"-"9"] >
+    | < IDENTIFIER : <LETTER> ( <LETTER> | <DIGIT> )* >
+    | < SEMICOLON : ";" >
+    | < LPAREN : "(" >
+    | < RPAREN : ")" >
+    | < COMPARE : "<" | "<=" | ">" | ">=" >
+    | < PLUSPLUS : "++">
+    | < MINUSMINUS : "--">
+}
+
+String Input(): { String code = ""; String assignCode = ""; }
+{
+    (
+        LOOKAHEAD(3)
+        code = DeclareVariable() (
+            assignCode = AssignVariable()
+            )? <SEMICOLON>
+        | code = PrintLine()
+        | code = ReadLine()
+        | code = FuncDeclaration()
+        | code = RepeatingStruc()
+    )
+
+    { return code + assignCode; }
+}
+
+String DeclareVariable(): { String type = ""; String identifier = ""; }
+{
+    type = TypeIndentifier() identifier=tokenToString()
+    { return "var " + identifier + ": " + type;}
+}
+
+String AssignVariable(): { String code = ""; }
+{
+    "=" code = tokenToString()
+    {return " = " + code;}
+}
+
+String TypeIndentifier(): { String code = ""; }
+{
+    <BYTE_T> {return "Byte";}
+    | <SHORT_T> {return "Short";}
+    | <INT_T> {return "Int";}
+    | <LONG_T> {return "Long";}
+    | <FLOAT_T> {return "Float";}
+    | <DOUBLE_T> {return "Double";}
+    | <BOOLEAN_T> {return "Boolean";}
+    | <CHAR_T> {return "Char";}
+    | <STRING_T> {return "String";}
+}
+
+String PrintLine(): { String code = ""; }
+{
+    "System.out.println(" code = tokenToString() ")" <SEMICOLON>
+    { return "println(" + code + ")"; }
+}
+
+String ReadLine(): { String code = ""; }
+{
+    "System.console().readLine()" <SEMICOLON>
+    { return "readln()"; }
+}
+
+String tokenToString() : {Token token = new Token();}
+{
+    token = <STRING> { return token.image; }
+    | token = <IDENTIFIER> { return token.image; }
+    | token = <INTEGER> { return token.image; }
+    | token = <PLUSPLUS> {return ".."; }
+    | token = <MINUSMINUS> {return " down to "; }
+}
+
+String ParamList() : {StringBuilder sb = new StringBuilder(); String id = "", type = "";}
+{
+    LOOKAHEAD(2)
+    <LPAREN> <RPAREN> {sb.append("()");}
+    | <LPAREN> type = TypeIndentifier() id = tokenToString() {sb.append("(" + id + ": " + type);}
+    ("," type = TypeIndentifier() id = tokenToString() {sb.append(", " + id + ": " + type);})* <RPAREN>
+
+    {sb.append(")");
+        return sb.toString();}
+
+}
+
+String FuncDeclaration() : {String funcName = "", funcType = "", params = "", code = ""; StringBuilder sb = new StringBuilder();}
+{
+
+//        <ENCAP> <STATIC> funcType=TypeIndentifier() funcName=tokenToString() params = ParamList() "{" (code = Input() {sb.append("\n").append(code);})* "}"
+//        | <ENCAP> funcType=TypeIndentifier() funcName=tokenToString() params = ParamList() "{" (code = Input() {sb.append("\n").append(code);})* "}"
+//        | <STATIC> funcType=TypeIndentifier() funcName=tokenToString() params = ParamList() "{" (code = Input() {sb.append("\n").append(code);})* "}"
+//        | funcType=TypeIndentifier() funcName=tokenToString() params = ParamList() "{" (code = Input() {sb.append("\n").append(code);})* "}"
+
+        (<ENCAP>)? (<STATIC>)? funcType=TypeIndentifier() funcName=tokenToString() params = ParamList() "{" (code = Input() {sb.append("\n").append(code);})* "}"
+
+    {return "fun " + funcName + " " + params + ": " + funcType + "{" + sb.toString() + "}"; }
+}
+
+String RepeatingStruc() : {String code = "";}
+{
+    code = ForLoop()
+    {return code;}
+}
+
+String ForLoop() : {String id = "", list = "",init = "", end = "", assign = "";}
+{
+    <FOR> <LPAREN> TypeIndentifier() id = tokenToString()
+    (
+    //    for(int carneirinhos = 1 ; carneirinhos <=20; carneirinhos ++)
+    //    for(int carneirinhos = 20 ; carneirinhos >=0; carneirinhos --)
+        "=" init = tokenToString() ";" <IDENTIFIER> <COMPARE> end = tokenToString() ";" <IDENTIFIER> assign = tokenToString() <RPAREN> "{}"
+            {return "for (" + id + " in " + init + assign + end + ")";}
+
+    //    for(String aluno : alunos)
+        | ":" list = tokenToString() <RPAREN> "{}"
+            {return "for (" + id + " in " + list + ")";}
+    )
+}
+
+String WhileLoop() : {}
+{
+
+}
