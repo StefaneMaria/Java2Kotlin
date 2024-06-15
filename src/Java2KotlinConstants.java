@@ -9,61 +9,65 @@ public interface Java2KotlinConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int INTEGER = 4;
+  int INTEGER = 5;
   /** RegularExpression Id. */
-  int FLOATING_POINT = 5;
+  int FLOATING_POINT = 6;
   /** RegularExpression Id. */
-  int CHAR = 6;
+  int CHAR = 7;
   /** RegularExpression Id. */
-  int STRING = 7;
+  int STRING = 8;
   /** RegularExpression Id. */
-  int ENCAP = 8;
+  int ENCAP = 9;
   /** RegularExpression Id. */
-  int STATIC = 9;
+  int STATIC = 10;
   /** RegularExpression Id. */
-  int FOR = 10;
+  int FOR = 11;
   /** RegularExpression Id. */
-  int DO = 11;
+  int DO = 12;
   /** RegularExpression Id. */
-  int WHILE = 12;
+  int WHILE = 13;
   /** RegularExpression Id. */
-  int BYTE_T = 13;
+  int IF = 14;
   /** RegularExpression Id. */
-  int SHORT_T = 14;
+  int ELSE = 15;
   /** RegularExpression Id. */
-  int INT_T = 15;
+  int BYTE_T = 16;
   /** RegularExpression Id. */
-  int LONG_T = 16;
+  int SHORT_T = 17;
   /** RegularExpression Id. */
-  int FLOAT_T = 17;
+  int INT_T = 18;
   /** RegularExpression Id. */
-  int DOUBLE_T = 18;
+  int LONG_T = 19;
   /** RegularExpression Id. */
-  int BOOLEAN_T = 19;
+  int FLOAT_T = 20;
   /** RegularExpression Id. */
-  int CHAR_T = 20;
+  int DOUBLE_T = 21;
   /** RegularExpression Id. */
-  int VOID_T = 21;
+  int BOOLEAN_T = 22;
   /** RegularExpression Id. */
-  int STRING_T = 22;
+  int CHAR_T = 23;
   /** RegularExpression Id. */
-  int LETTER = 23;
+  int VOID_T = 24;
   /** RegularExpression Id. */
-  int DIGIT = 24;
+  int STRING_T = 25;
   /** RegularExpression Id. */
-  int IDENTIFIER = 25;
+  int LETTER = 26;
   /** RegularExpression Id. */
-  int SEMICOLON = 26;
+  int DIGIT = 27;
   /** RegularExpression Id. */
-  int LPAREN = 27;
+  int IDENTIFIER = 28;
   /** RegularExpression Id. */
-  int RPAREN = 28;
+  int SEMICOLON = 29;
   /** RegularExpression Id. */
-  int COMPARE = 29;
+  int LPAREN = 30;
   /** RegularExpression Id. */
-  int PLUSPLUS = 30;
+  int RPAREN = 31;
   /** RegularExpression Id. */
-  int MINUSMINUS = 31;
+  int COMPARE = 32;
+  /** RegularExpression Id. */
+  int PLUSPLUS = 33;
+  /** RegularExpression Id. */
+  int MINUSMINUS = 34;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -74,6 +78,7 @@ public interface Java2KotlinConstants {
     "\"\\n\"",
     "\"\\r\"",
     "\" \"",
+    "\"\\t\"",
     "<INTEGER>",
     "<FLOATING_POINT>",
     "<CHAR>",
@@ -83,6 +88,8 @@ public interface Java2KotlinConstants {
     "\"for\"",
     "\"do\"",
     "\"while\"",
+    "\"if\"",
+    "\"else\"",
     "<BYTE_T>",
     "<SHORT_T>",
     "<INT_T>",
@@ -108,7 +115,6 @@ public interface Java2KotlinConstants {
     "\",\"",
     "\"{\"",
     "\"}\"",
-    "\"{}\"",
     "\":\"",
   };
 

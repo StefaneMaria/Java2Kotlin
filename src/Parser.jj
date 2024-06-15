@@ -18,6 +18,7 @@ SKIP :
     "\n"
     | "\r"
     | " "
+    |"\t"
 }
 
 TOKEN :
@@ -39,6 +40,8 @@ TOKEN :
     < FOR : "for" >
     | < DO : "do" >
     | < WHILE : "while" >
+    | < IF : "if" >
+    | < ELSE : "else" >
 }
 
 TOKEN :
@@ -68,6 +71,7 @@ TOKEN :
     | < MINUSMINUS : "--">
 }
 
+//O(1)
 String Input(): { String code = ""; String assignCode = ""; }
 {
     (
@@ -79,23 +83,27 @@ String Input(): { String code = ""; String assignCode = ""; }
         | code = ReadLine()
         | code = FuncDeclaration()
         | code = RepeatingStruc()
+        | code = If()
     )
 
     { return code + assignCode; }
 }
 
+//O(1)
 String DeclareVariable(): { String type = ""; String identifier = ""; }
 {
     type = TypeIndentifier() identifier=tokenToString()
     { return "var " + identifier + ": " + type;}
 }
 
+//O(1)
 String AssignVariable(): { String code = ""; }
 {
     "=" code = tokenToString()
     {return " = " + code;}
 }
 
+//O(1)
 String TypeIndentifier(): { String code = ""; }
 {
     <BYTE_T> {return "Byte";}
@@ -107,20 +115,24 @@ String TypeIndentifier(): { String code = ""; }
     | <BOOLEAN_T> {return "Boolean";}
     | <CHAR_T> {return "Char";}
     | <STRING_T> {return "String";}
+    | <VOID_T> {return "";}
 }
 
+//O(1)
 String PrintLine(): { String code = ""; }
 {
     "System.out.println(" code = tokenToString() ")" <SEMICOLON>
     { return "println(" + code + ")"; }
 }
 
+//O(1)
 String ReadLine(): { String code = ""; }
 {
     "System.console().readLine()" <SEMICOLON>
     { return "readln()"; }
 }
 
+//O(1)
 String tokenToString() : {Token token = new Token();}
 {
     token = <STRING> { return token.image; }
@@ -130,6 +142,7 @@ String tokenToString() : {Token token = new Token();}
     | token = <MINUSMINUS> {return " down to "; }
 }
 
+//O(n)
 String ParamList() : {StringBuilder sb = new StringBuilder(); String id = "", type = "";}
 {
     LOOKAHEAD(2)
@@ -142,41 +155,40 @@ String ParamList() : {StringBuilder sb = new StringBuilder(); String id = "", ty
 
 }
 
+//O(n)
 String FuncDeclaration() : {String funcName = "", funcType = "", params = "", code = ""; StringBuilder sb = new StringBuilder();}
 {
-
-//        <ENCAP> <STATIC> funcType=TypeIndentifier() funcName=tokenToString() params = ParamList() "{" (code = Input() {sb.append("\n").append(code);})* "}"
-//        | <ENCAP> funcType=TypeIndentifier() funcName=tokenToString() params = ParamList() "{" (code = Input() {sb.append("\n").append(code);})* "}"
-//        | <STATIC> funcType=TypeIndentifier() funcName=tokenToString() params = ParamList() "{" (code = Input() {sb.append("\n").append(code);})* "}"
-//        | funcType=TypeIndentifier() funcName=tokenToString() params = ParamList() "{" (code = Input() {sb.append("\n").append(code);})* "}"
-
         (<ENCAP>)? (<STATIC>)? funcType=TypeIndentifier() funcName=tokenToString() params = ParamList() "{" (code = Input() {sb.append("\n").append(code);})* "}"
 
     {return "fun " + funcName + " " + params + ": " + funcType + "{" + sb.toString() + "}"; }
 }
 
+//O(1)
 String RepeatingStruc() : {String code = "";}
 {
     code = ForLoop()
     {return code;}
 }
 
-String ForLoop() : {String id = "", list = "",init = "", end = "", assign = "";}
+//O(n)
+String ForLoop() : {String id = "", list = "",init = "", end = "", assign = "", code = ""; StringBuilder sb = new StringBuilder();}
 {
     <FOR> <LPAREN> TypeIndentifier() id = tokenToString()
     (
     //    for(int carneirinhos = 1 ; carneirinhos <=20; carneirinhos ++)
     //    for(int carneirinhos = 20 ; carneirinhos >=0; carneirinhos --)
-        "=" init = tokenToString() ";" <IDENTIFIER> <COMPARE> end = tokenToString() ";" <IDENTIFIER> assign = tokenToString() <RPAREN> "{}"
-            {return "for (" + id + " in " + init + assign + end + ")";}
+        "=" init = tokenToString() ";" <IDENTIFIER> <COMPARE> end = tokenToString() ";" <IDENTIFIER> assign = tokenToString() <RPAREN> "{" (code = Input() {sb.append("\n").append(code);})* "}"
+            {return "for (" + id + " in " + init + assign + end + ") {" + sb.toString() + "}";}
 
     //    for(String aluno : alunos)
-        | ":" list = tokenToString() <RPAREN> "{}"
-            {return "for (" + id + " in " + list + ")";}
+        | ":" list = tokenToString() <RPAREN> "{" (code = Input() {sb.append("\n").append(code);})* "}"
+            {return "for (" + id + " in " + list + "){" + sb.toString() + "}";}
     )
 }
 
-String WhileLoop() : {}
+// O(n)
+String If() : {String code = ""; StringBuilder body = new StringBuilder();}
 {
-
+    <IF> <LPAREN> <RPAREN> "{" (code = Input() {body.append("\n").append(code);})* "}"
+    {return "if () { \n" + body.toString() + "}";}
 }

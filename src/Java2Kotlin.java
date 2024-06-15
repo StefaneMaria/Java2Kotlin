@@ -6,11 +6,12 @@ public class Java2Kotlin implements Java2KotlinConstants {
       System.out.println(parser.Input());
     }
 
+//O(1)
   static final public String Input() throws ParseException {String code = ""; String assignCode = "";
     if (jj_2_1(3)) {
       code = DeclareVariable();
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 32:{
+      case 35:{
         assignCode = AssignVariable();
         break;
         }
@@ -21,11 +22,11 @@ public class Java2Kotlin implements Java2KotlinConstants {
       jj_consume_token(SEMICOLON);
     } else {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 33:{
+      case 36:{
         code = PrintLine();
         break;
         }
-      case 34:{
+      case 37:{
         code = ReadLine();
         break;
         }
@@ -39,12 +40,17 @@ public class Java2Kotlin implements Java2KotlinConstants {
       case DOUBLE_T:
       case BOOLEAN_T:
       case CHAR_T:
+      case VOID_T:
       case STRING_T:{
         code = FuncDeclaration();
         break;
         }
       case FOR:{
         code = RepeatingStruc();
+        break;
+        }
+      case IF:{
+        code = If();
         break;
         }
       default:
@@ -57,6 +63,7 @@ public class Java2Kotlin implements Java2KotlinConstants {
     throw new Error("Missing return statement in function");
 }
 
+//O(1)
   static final public String DeclareVariable() throws ParseException {String type = ""; String identifier = "";
     type = TypeIndentifier();
     identifier = tokenToString();
@@ -64,13 +71,15 @@ public class Java2Kotlin implements Java2KotlinConstants {
     throw new Error("Missing return statement in function");
 }
 
+//O(1)
   static final public String AssignVariable() throws ParseException {String code = "";
-    jj_consume_token(32);
+    jj_consume_token(35);
     code = tokenToString();
 {if ("" != null) return " = " + code;}
     throw new Error("Missing return statement in function");
 }
 
+//O(1)
   static final public String TypeIndentifier() throws ParseException {String code = "";
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case BYTE_T:{
@@ -118,6 +127,11 @@ public class Java2Kotlin implements Java2KotlinConstants {
 {if ("" != null) return "String";}
       break;
       }
+    case VOID_T:{
+      jj_consume_token(VOID_T);
+{if ("" != null) return "";}
+      break;
+      }
     default:
       jj_la1[2] = jj_gen;
       jj_consume_token(-1);
@@ -126,8 +140,9 @@ public class Java2Kotlin implements Java2KotlinConstants {
     throw new Error("Missing return statement in function");
 }
 
+//O(1)
   static final public String PrintLine() throws ParseException {String code = "";
-    jj_consume_token(33);
+    jj_consume_token(36);
     code = tokenToString();
     jj_consume_token(RPAREN);
     jj_consume_token(SEMICOLON);
@@ -135,13 +150,15 @@ public class Java2Kotlin implements Java2KotlinConstants {
     throw new Error("Missing return statement in function");
 }
 
+//O(1)
   static final public String ReadLine() throws ParseException {String code = "";
-    jj_consume_token(34);
+    jj_consume_token(37);
     jj_consume_token(SEMICOLON);
 {if ("" != null) return "readln()";}
     throw new Error("Missing return statement in function");
 }
 
+//O(1)
   static final public String tokenToString() throws ParseException {Token token = new Token();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case STRING:{
@@ -177,6 +194,7 @@ public class Java2Kotlin implements Java2KotlinConstants {
     throw new Error("Missing return statement in function");
 }
 
+//O(n)
   static final public String ParamList() throws ParseException {StringBuilder sb = new StringBuilder(); String id = "", type = "";
     if (jj_2_2(2)) {
       jj_consume_token(LPAREN);
@@ -192,7 +210,7 @@ sb.append("(" + id + ": " + type);
         label_1:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-          case 35:{
+          case 38:{
             ;
             break;
             }
@@ -200,7 +218,7 @@ sb.append("(" + id + ": " + type);
             jj_la1[4] = jj_gen;
             break label_1;
           }
-          jj_consume_token(35);
+          jj_consume_token(38);
           type = TypeIndentifier();
           id = tokenToString();
 sb.append(", " + id + ": " + type);
@@ -219,6 +237,7 @@ sb.append(")");
     throw new Error("Missing return statement in function");
 }
 
+//O(n)
   static final public String FuncDeclaration() throws ParseException {String funcName = "", funcType = "", params = "", code = ""; StringBuilder sb = new StringBuilder();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case ENCAP:{
@@ -241,13 +260,14 @@ sb.append(")");
     funcType = TypeIndentifier();
     funcName = tokenToString();
     params = ParamList();
-    jj_consume_token(36);
+    jj_consume_token(39);
     label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case ENCAP:
       case STATIC:
       case FOR:
+      case IF:
       case BYTE_T:
       case SHORT_T:
       case INT_T:
@@ -256,9 +276,10 @@ sb.append(")");
       case DOUBLE_T:
       case BOOLEAN_T:
       case CHAR_T:
+      case VOID_T:
       case STRING_T:
-      case 33:
-      case 34:{
+      case 36:
+      case 37:{
         ;
         break;
         }
@@ -269,25 +290,27 @@ sb.append(")");
       code = Input();
 sb.append("\n").append(code);
     }
-    jj_consume_token(37);
+    jj_consume_token(40);
 {if ("" != null) return "fun " + funcName + " " + params + ": " + funcType + "{" + sb.toString() + "}";}
     throw new Error("Missing return statement in function");
 }
 
+//O(1)
   static final public String RepeatingStruc() throws ParseException {String code = "";
     code = ForLoop();
 {if ("" != null) return code;}
     throw new Error("Missing return statement in function");
 }
 
-  static final public String ForLoop() throws ParseException {String id = "", list = "",init = "", end = "", assign = "";
+//O(n)
+  static final public String ForLoop() throws ParseException {String id = "", list = "",init = "", end = "", assign = "", code = ""; StringBuilder sb = new StringBuilder();
     jj_consume_token(FOR);
     jj_consume_token(LPAREN);
     TypeIndentifier();
     id = tokenToString();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case 32:{
-      jj_consume_token(32);
+    case 35:{
+      jj_consume_token(35);
       init = tokenToString();
       jj_consume_token(SEMICOLON);
       jj_consume_token(IDENTIFIER);
@@ -297,23 +320,123 @@ sb.append("\n").append(code);
       jj_consume_token(IDENTIFIER);
       assign = tokenToString();
       jj_consume_token(RPAREN);
-      jj_consume_token(38);
-{if ("" != null) return "for (" + id + " in " + init + assign + end + ")";}
+      jj_consume_token(39);
+      label_3:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case ENCAP:
+        case STATIC:
+        case FOR:
+        case IF:
+        case BYTE_T:
+        case SHORT_T:
+        case INT_T:
+        case LONG_T:
+        case FLOAT_T:
+        case DOUBLE_T:
+        case BOOLEAN_T:
+        case CHAR_T:
+        case VOID_T:
+        case STRING_T:
+        case 36:
+        case 37:{
+          ;
+          break;
+          }
+        default:
+          jj_la1[9] = jj_gen;
+          break label_3;
+        }
+        code = Input();
+sb.append("\n").append(code);
+      }
+      jj_consume_token(40);
+{if ("" != null) return "for (" + id + " in " + init + assign + end + ") {" + sb.toString() + "}";}
       break;
       }
-    case 39:{
-      jj_consume_token(39);
+    case 41:{
+      jj_consume_token(41);
       list = tokenToString();
       jj_consume_token(RPAREN);
-      jj_consume_token(38);
-{if ("" != null) return "for (" + id + " in " + list + ")";}
+      jj_consume_token(39);
+      label_4:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case ENCAP:
+        case STATIC:
+        case FOR:
+        case IF:
+        case BYTE_T:
+        case SHORT_T:
+        case INT_T:
+        case LONG_T:
+        case FLOAT_T:
+        case DOUBLE_T:
+        case BOOLEAN_T:
+        case CHAR_T:
+        case VOID_T:
+        case STRING_T:
+        case 36:
+        case 37:{
+          ;
+          break;
+          }
+        default:
+          jj_la1[10] = jj_gen;
+          break label_4;
+        }
+        code = Input();
+sb.append("\n").append(code);
+      }
+      jj_consume_token(40);
+{if ("" != null) return "for (" + id + " in " + list + "){" + sb.toString() + "}";}
       break;
       }
     default:
-      jj_la1[9] = jj_gen;
+      jj_la1[11] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+    throw new Error("Missing return statement in function");
+}
+
+// O(n)
+  static final public String If() throws ParseException {String code = ""; StringBuilder body = new StringBuilder();
+    jj_consume_token(IF);
+    jj_consume_token(LPAREN);
+    jj_consume_token(RPAREN);
+    jj_consume_token(39);
+    label_5:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case ENCAP:
+      case STATIC:
+      case FOR:
+      case IF:
+      case BYTE_T:
+      case SHORT_T:
+      case INT_T:
+      case LONG_T:
+      case FLOAT_T:
+      case DOUBLE_T:
+      case BOOLEAN_T:
+      case CHAR_T:
+      case VOID_T:
+      case STRING_T:
+      case 36:
+      case 37:{
+        ;
+        break;
+        }
+      default:
+        jj_la1[12] = jj_gen;
+        break label_5;
+      }
+      code = Input();
+body.append("\n").append(code);
+    }
+    jj_consume_token(40);
+{if ("" != null) return "if () { \n" + body.toString() + "}";}
     throw new Error("Missing return statement in function");
 }
 
@@ -333,6 +456,123 @@ sb.append("\n").append(code);
     finally { jj_save(1, xla); }
   }
 
+  static private boolean jj_3R_Input_80_13_7()
+ {
+    if (jj_3R_AssignVariable_102_5_10()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_1()
+ {
+    if (jj_3R_DeclareVariable_95_5_6()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_Input_80_13_7()) jj_scanpos = xsp;
+    if (jj_scan_token(SEMICOLON)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_TypeIndentifier_118_7_20()
+ {
+    if (jj_scan_token(VOID_T)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_TypeIndentifier_117_7_19()
+ {
+    if (jj_scan_token(STRING_T)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_TypeIndentifier_116_7_18()
+ {
+    if (jj_scan_token(CHAR_T)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_TypeIndentifier_115_7_17()
+ {
+    if (jj_scan_token(BOOLEAN_T)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_TypeIndentifier_114_7_16()
+ {
+    if (jj_scan_token(DOUBLE_T)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_TypeIndentifier_113_7_15()
+ {
+    if (jj_scan_token(FLOAT_T)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_TypeIndentifier_112_7_14()
+ {
+    if (jj_scan_token(LONG_T)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_TypeIndentifier_111_7_13()
+ {
+    if (jj_scan_token(INT_T)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_TypeIndentifier_110_7_12()
+ {
+    if (jj_scan_token(SHORT_T)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_TypeIndentifier_109_5_11()
+ {
+    if (jj_scan_token(BYTE_T)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_TypeIndentifier_109_5_8()
+ {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_TypeIndentifier_109_5_11()) {
+    jj_scanpos = xsp;
+    if (jj_3R_TypeIndentifier_110_7_12()) {
+    jj_scanpos = xsp;
+    if (jj_3R_TypeIndentifier_111_7_13()) {
+    jj_scanpos = xsp;
+    if (jj_3R_TypeIndentifier_112_7_14()) {
+    jj_scanpos = xsp;
+    if (jj_3R_TypeIndentifier_113_7_15()) {
+    jj_scanpos = xsp;
+    if (jj_3R_TypeIndentifier_114_7_16()) {
+    jj_scanpos = xsp;
+    if (jj_3R_TypeIndentifier_115_7_17()) {
+    jj_scanpos = xsp;
+    if (jj_3R_TypeIndentifier_116_7_18()) {
+    jj_scanpos = xsp;
+    if (jj_3R_TypeIndentifier_117_7_19()) {
+    jj_scanpos = xsp;
+    if (jj_3R_TypeIndentifier_118_7_20()) return true;
+    }
+    }
+    }
+    }
+    }
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_AssignVariable_102_5_10()
+ {
+    if (jj_scan_token(35)) return true;
+    return false;
+  }
+
   static private boolean jj_3_2()
  {
     if (jj_scan_token(LPAREN)) return true;
@@ -340,168 +580,60 @@ sb.append("\n").append(code);
     return false;
   }
 
-  static private boolean jj_3R_tokenToString_130_7_21()
+  static private boolean jj_3R_tokenToString_142_7_25()
  {
     if (jj_scan_token(MINUSMINUS)) return true;
     return false;
   }
 
-  static private boolean jj_3R_tokenToString_129_7_20()
+  static private boolean jj_3R_tokenToString_141_7_24()
  {
     if (jj_scan_token(PLUSPLUS)) return true;
     return false;
   }
 
-  static private boolean jj_3R_Input_76_13_4()
- {
-    if (jj_3R_AssignVariable_95_5_7()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_tokenToString_128_7_19()
+  static private boolean jj_3R_tokenToString_140_7_23()
  {
     if (jj_scan_token(INTEGER)) return true;
     return false;
   }
 
-  static private boolean jj_3R_tokenToString_127_7_18()
+  static private boolean jj_3R_DeclareVariable_95_5_6()
+ {
+    if (jj_3R_TypeIndentifier_109_5_8()) return true;
+    if (jj_3R_tokenToString_138_5_9()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_tokenToString_139_7_22()
  {
     if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
-  static private boolean jj_3R_tokenToString_126_5_6()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_tokenToString_126_5_17()) {
-    jj_scanpos = xsp;
-    if (jj_3R_tokenToString_127_7_18()) {
-    jj_scanpos = xsp;
-    if (jj_3R_tokenToString_128_7_19()) {
-    jj_scanpos = xsp;
-    if (jj_3R_tokenToString_129_7_20()) {
-    jj_scanpos = xsp;
-    if (jj_3R_tokenToString_130_7_21()) return true;
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_tokenToString_126_5_17()
+  static private boolean jj_3R_tokenToString_138_5_21()
  {
     if (jj_scan_token(STRING)) return true;
     return false;
   }
 
-  static private boolean jj_3_1()
- {
-    if (jj_3R_DeclareVariable_89_5_3()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_Input_76_13_4()) jj_scanpos = xsp;
-    if (jj_scan_token(SEMICOLON)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_TypeIndentifier_109_7_16()
- {
-    if (jj_scan_token(STRING_T)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_TypeIndentifier_108_7_15()
- {
-    if (jj_scan_token(CHAR_T)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_TypeIndentifier_107_7_14()
- {
-    if (jj_scan_token(BOOLEAN_T)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_TypeIndentifier_106_7_13()
- {
-    if (jj_scan_token(DOUBLE_T)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_TypeIndentifier_105_7_12()
- {
-    if (jj_scan_token(FLOAT_T)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_TypeIndentifier_104_7_11()
- {
-    if (jj_scan_token(LONG_T)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_TypeIndentifier_103_7_10()
- {
-    if (jj_scan_token(INT_T)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_TypeIndentifier_102_7_9()
- {
-    if (jj_scan_token(SHORT_T)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_TypeIndentifier_101_5_8()
- {
-    if (jj_scan_token(BYTE_T)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_TypeIndentifier_101_5_5()
+  static private boolean jj_3R_tokenToString_138_5_9()
  {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_TypeIndentifier_101_5_8()) {
+    if (jj_3R_tokenToString_138_5_21()) {
     jj_scanpos = xsp;
-    if (jj_3R_TypeIndentifier_102_7_9()) {
+    if (jj_3R_tokenToString_139_7_22()) {
     jj_scanpos = xsp;
-    if (jj_3R_TypeIndentifier_103_7_10()) {
+    if (jj_3R_tokenToString_140_7_23()) {
     jj_scanpos = xsp;
-    if (jj_3R_TypeIndentifier_104_7_11()) {
+    if (jj_3R_tokenToString_141_7_24()) {
     jj_scanpos = xsp;
-    if (jj_3R_TypeIndentifier_105_7_12()) {
-    jj_scanpos = xsp;
-    if (jj_3R_TypeIndentifier_106_7_13()) {
-    jj_scanpos = xsp;
-    if (jj_3R_TypeIndentifier_107_7_14()) {
-    jj_scanpos = xsp;
-    if (jj_3R_TypeIndentifier_108_7_15()) {
-    jj_scanpos = xsp;
-    if (jj_3R_TypeIndentifier_109_7_16()) return true;
+    if (jj_3R_tokenToString_142_7_25()) return true;
     }
     }
     }
     }
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_AssignVariable_95_5_7()
- {
-    if (jj_scan_token(32)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_DeclareVariable_89_5_3()
- {
-    if (jj_3R_TypeIndentifier_101_5_5()) return true;
-    if (jj_3R_tokenToString_126_5_6()) return true;
     return false;
   }
 
@@ -517,7 +649,7 @@ sb.append("\n").append(code);
   static private Token jj_scanpos, jj_lastpos;
   static private int jj_la;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[10];
+  static final private int[] jj_la1 = new int[13];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -525,10 +657,10 @@ sb.append("\n").append(code);
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x0,0x5fe700,0x5fe000,0xc2000090,0x0,0x8000000,0x100,0x200,0x5fe700,0x0,};
+	   jj_la1_0 = new int[] {0x0,0x3ff4e00,0x3ff0000,0x10000120,0x0,0x40000000,0x200,0x400,0x3ff4e00,0x3ff4e00,0x3ff4e00,0x0,0x3ff4e00,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x1,0x6,0x0,0x0,0x8,0x0,0x0,0x0,0x6,0x81,};
+	   jj_la1_1 = new int[] {0x8,0x30,0x0,0x6,0x40,0x0,0x0,0x0,0x30,0x30,0x30,0x208,0x30,};
 	}
   static final private JJCalls[] jj_2_rtns = new JJCalls[2];
   static private boolean jj_rescan = false;
@@ -552,7 +684,7 @@ sb.append("\n").append(code);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 13; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -567,7 +699,7 @@ sb.append("\n").append(code);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 13; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -585,7 +717,7 @@ sb.append("\n").append(code);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 13; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -604,7 +736,7 @@ sb.append("\n").append(code);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 13; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -621,7 +753,7 @@ sb.append("\n").append(code);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 13; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -631,7 +763,7 @@ sb.append("\n").append(code);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 13; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -762,12 +894,12 @@ sb.append("\n").append(code);
   /** Generate ParseException. */
   static public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[40];
+	 boolean[] la1tokens = new boolean[42];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
 	 }
-	 for (int i = 0; i < 10; i++) {
+	 for (int i = 0; i < 13; i++) {
 	   if (jj_la1[i] == jj_gen) {
 		 for (int j = 0; j < 32; j++) {
 		   if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -779,7 +911,7 @@ sb.append("\n").append(code);
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 40; i++) {
+	 for (int i = 0; i < 42; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;
